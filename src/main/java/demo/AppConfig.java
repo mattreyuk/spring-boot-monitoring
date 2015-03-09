@@ -4,10 +4,11 @@ import java.lang.management.ManagementFactory;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import com.codahale.metrics.*;
 import com.codahale.metrics.jvm.BufferPoolMetricSet;
@@ -15,8 +16,8 @@ import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 
-@Component
-public class AppConfig implements InitializingBean {
+@Configuration
+public class AppConfig {
 	
 	@Autowired
 	MetricRegistry metricRegistry;
@@ -36,7 +37,7 @@ public class AppConfig implements InitializingBean {
 	        }
 	    }
 	}
-	@Override
+	@PostConstruct
 	public void afterPropertiesSet() throws Exception {
 		registerAll("gc", new GarbageCollectorMetricSet(), metricRegistry);
 		registerAll("buffers", new BufferPoolMetricSet(ManagementFactory.getPlatformMBeanServer()), metricRegistry);
